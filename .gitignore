@@ -1,0 +1,9 @@
+secrets.yaml
+.storage/
+.cloud/
+.cache/
+home-assistant.log
+home-assistant.log.fault
+*.db
+*.db-shm
+*.db-wal
