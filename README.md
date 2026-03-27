@@ -15,6 +15,7 @@ Personal homelab running on Proxmox VE with Home Assistant for smart home automa
 - `docs/` - General documentation
 
 ## Goals
-- Fully local smart home with zero cloud dependency
-- Self-hosted services via Proxmox LXC containers
-- Infrastructure as code — all config version controlled
+- Self-hosted smart home infrastructure running on private cloud architecture
+- Virtualized services via Proxmox with plans to expand to containerized workloads
+- Infrastructure as code — all config version controlled in Git
+- Hands-on experience with networking, VLANs, firewall rules, and automation

@@ -7,3 +7,4 @@ home-assistant.log.fault
 *.db
 *.db-shm
 *.db-wal
+.ha_run.lock
