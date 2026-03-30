@@ -1,4 +1,3 @@
-
 # Loads default set of integrations. Do not remove.
 default_config:
 
@@ -9,3 +8,12 @@ frontend:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+emulated_hue:
+  host_ip: 192.168.10.204
+  listen_port: 80
+  expose_by_default: false
+  entities:
+    switch.espresso_machine:
+      name: "Espresso Machine"
+      hidden: false
