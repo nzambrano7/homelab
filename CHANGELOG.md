@@ -22,3 +22,18 @@ All notable changes to this homelab will be documented here.
 ### Decided
 - Proxmox staying on Trusted VLAN 10 temporarily due to unmanaged switch limitation
 - Will migrate to Management VLAN 99 when moving to new house with proper cable runs
+
+## [2026-03-30]
+### Added
+- HACS (Home Assistant Community Store) installed
+- Alexa Media Player integration (8 devices, 46 entities) — Echo Show 10, Echo Spot, Fire TV Sticks x3, Samsung QLED TV
+- Emulated Hue integration configured for Alexa voice control of HA entities
+- Kasa HS103 (Espresso Machine) connected via TP-Link Smart Home integration
+- UniFi firewall rule: Allow IoT to HA on port 80 for Emulated Hue discovery
+- HACS integrations documented in docs/hacs_integrations.md
+
+### Decided
+- Alexa as temporary voice platform — switching to Apple HomeKit + HomePod Minis in new house
+- Smart bulbs over switches for current house given ~1 year timeline
+- Second USW Lite 8 PoE ordered for desk — USW Lite 8 PoE stays in laundry for AP PoE
+- custom_components excluded from git tracking — HACS reinstallable, not portfolio value
