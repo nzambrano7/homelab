@@ -8,3 +8,5 @@ home-assistant.log.fault
 *.db-shm
 *.db-wal
 .ha_run.lock
+custom_components/
+custom_components/
