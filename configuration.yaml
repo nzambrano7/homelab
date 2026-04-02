@@ -17,3 +17,9 @@ emulated_hue:
     switch.espresso_machine:
       name: "Espresso Machine"
       hidden: false
+    light.garage_bulb_1:
+      name: "Garage Bulb 1"
+      hidden: false
+    light.garage_bulb_2:
+      name: "Garage Bulb 2"
+      hidden: false
