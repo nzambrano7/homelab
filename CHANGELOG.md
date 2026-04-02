@@ -37,3 +37,22 @@ All notable changes to this homelab will be documented here.
 - Smart bulbs over switches for current house given ~1 year timeline
 - Second USW Lite 8 PoE ordered for desk — USW Lite 8 PoE stays in laundry for AP PoE
 - custom_components excluded from git tracking — HACS reinstallable, not portfolio value
+
+## [2026-04-01]
+### Added
+- USW Lite 8 PoE installed at desk (office switch)
+- THIRDREALITY Zigbee RGBCW bulbs paired to ZHA (garage)
+
+### Changed
+- Proxmox migrated from Trusted VLAN 10 (192.168.10.10) to Management VLAN 99 (192.168.99.10)
+- vmbr0 configured as VLAN-aware bridge with bridge-pvid 99
+- vmbr0.99 created as Proxmox management interface
+- HA VM network device set to vmbr0 with VLAN tag 10, maintaining 192.168.10.204
+- Office switch Port 3 configured as trunk (Native VLAN 99, Tagged VLAN 10)
+- Laundry switch uplink port set to Native VLAN Default (1) with Allow All — fixes VLAN tag corruption on return traffic
+
+### Fixed
+- HA internet outage caused by laundry switch uplink port having Native VLAN Trusted (10) instead of Default (1), corrupting gateway ARP reply VLAN tags
+
+### Decided
+- Uplink/trunk ports between switches must always be Native Default (1) — they are pass-through pipes, not endpoints
