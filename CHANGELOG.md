@@ -56,3 +56,8 @@ All notable changes to this homelab will be documented here.
 
 ### Decided
 - Uplink/trunk ports between switches must always be Native Default (1) — they are pass-through pipes, not endpoints
+
+## [2026-04-02]
+### Added
+- Garage lights schedule automation (on at 19:00, off at 07:00) via time trigger
+- Exposed light.garage_bulb_1 and light.garage_bulb_2 to Emulated Hue in configuration.yaml
