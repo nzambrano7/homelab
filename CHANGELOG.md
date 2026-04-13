@@ -2,6 +2,22 @@
 
 All notable changes to this homelab will be documented here.
 
+## [2026-04-14]
+### Added
+- Tailscale installed on Proxmox (pve) for remote access
+- Subnet routes advertised: 192.168.1.0/24, 192.168.10.0/24, 192.168.20.0/24, 192.168.99.0/24
+- iPhone added as Tailscale peer
+- Remote access confirmed working for Proxmox (100.104.61.48:8006) and HA (192.168.10.204:8123)
+
+### Removed
+- WireGuard LXC (CT 102) removed — redundant with Tailscale
+- UCG Ultra port forward UDP 51820 removed
+
+### Decided
+- AT&T BGW320 double NAT prevents true IP passthrough to UCG Ultra
+- Tailscale handles remote access short-term
+- WAS-110 + UCG Ultra Max planned for new house to eliminate AT&T gateway entirely
+
 ## [2026-04-13]
 ### Added
 - Automatic HA backups configured — daily schedule, 3 copies retained, encrypted with key stored in 1Password Homelab vault
