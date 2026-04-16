@@ -2,6 +2,39 @@
 
 All notable changes to this homelab will be documented here.
 
+## [2026-04-16]
+### Changed
+- Migrated to Zone-Based Firewall — IoT VLAN moved to Untrusted zone for proper isolation
+- mDNS Proxy changed from Auto to Custom (IoT + Trusted) — required for Emulated Hue/Alexa discovery across VLANs
+- CyberSecure Encrypted DNS disabled — was bypassing Pi-hole entirely
+- Default Security Posture changed to Block All
+- IGMP Snooping enabled on all VLANs
+- Pi-hole set as DNS for Trusted, Default, and Management VLANs
+- IoT DNS left on Auto (gateway) — Pi-hole filtering not needed for IoT devices
+
+### Added
+- Allow IoT DNS to Pi-hole — Untrusted → Internal, TCP/UDP port 53
+- Allow IoT to HA Emulated Hue — Untrusted → Internal 192.168.10.204, ports 80/1900
+- Allow Internal to IoT — Internal → Untrusted, all traffic
+- Block Default to All — Internal/Default → Trusted + IoT + Management
+
+### Removed
+- All legacy Simple firewall rules replaced by Zone-Based Firewall policies
+- Block IoT to Main — replaced by Untrusted zone isolation
+- Allow Trusted to IoT — replaced by Allow Internal to IoT
+- HA to IoT — redundant with Allow Internal to IoT
+- Allow Management to IoT — redundant with Allow Internal to IoT
+
+### Fixed
+- Alexa discovery of Emulated Hue devices — fixed by Custom mDNS Proxy scope
+- IoT device DNS resolution — Zone-Based Firewall allows IoT → Pi-hole on port 53
+- Bambu Lab LAN connection from PC — fixed by Allow Internal to IoT rule
+
+### Known Issues
+- UniFi APs on Default VLAN blocked from Pi-hole — not critical, APs don't need DNS filtering
+- Samsung TV still on Trusted VLAN — move to IoT when convenient
+- Tesla on Trusted VLAN (offline) — move to IoT when it reconnects
+
 ## [2026-04-14]
 ### Added
 - Tailscale installed on Proxmox (pve) for remote access
