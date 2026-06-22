@@ -1,6 +1,40 @@
 # Changelog
 
 All notable changes to this homelab will be documented here.
+## [2026-06-22]
+
+### Fixed
+- Uptime Kuma Proxmox monitor — switched from HTTPS to TCP Port 8006; pveproxy worker recycling was causing false positive alerts every 30–60 min. TCP check is unaffected by worker cycling.
+- Beszel Proxmox host status alert delay increased to 2 min — brief WebSocket reconnects during pveproxy recycling were triggering false alerts.
+- e1000e NIC watchdog hang returned after Proxmox kernel update (7.0.12-1-pve). BIOS update alone was insufficient. Permanent fix applied: `echo "options e1000e SmartPowerDownEnable=0" > /etc/modprobe.d/e1000e.conf` + `update-initramfs -u -k all`. Applied to all installed kernels.
+
+### Added
+- Watchtower container added to monitoring stack in CT 102 — auto-updates Uptime Kuma and Beszel Hub daily at 4am. Requires DOCKER_API_VERSION=1.40 for Docker Engine 29.x compatibility.
+- Pi-hole weekly auto-update cron (`pihole -up` every Sunday at 3am) + unattended-upgrades for Debian security patches.
+- Home Assistant auto-update enabled via Settings → System → Updates.
+
+### Updated
+- Proxmox VE, Pi-hole, and Home Assistant OS all updated.
+
+## [2026-06-21]
+
+### Added
+- CT 102 "docker-lxc" created — Debian 13, 192.168.10.6/24 (VLAN 10), 2 vCPU, 1024MB RAM, 8GB disk, unprivileged, nesting enabled. DNS manually overridden to 192.168.10.5 — Tailscale MagicDNS was taking over by default.
+- Docker + Docker Compose installed in CT 102.
+- Uptime Kuma deployed (port 3001) — monitors Pi-hole, Home Assistant, Proxmox, Internet/DNS. Discord webhook notifications on all monitors.
+- Beszel Hub deployed (port 8090) — agent on Proxmox host (binary, port 45876, auto-updates enabled). Alerts: Status 2min delay, CPU/Memory >90%, Disk >85%, Temp >80°C, Load Avg >4 — all 10min delay. Discord via Shoutrrr format.
+
+### Fixed
+- Proxmox NIC watchdog crashes (e1000e) — partially resolved by BIOS update to M1UKT79A/1.0.0.121 via USB flash. Note: use exFAT not FAT32 for USB drives >32GB in Windows diskpart.
+
+### Decided
+- AT&T 5G fiber upgrade declined — UCG Ultra caps at 1G WAN, full multi-gig requires ~$1000 in new hardware for ~1 year remaining stay.
+- WAS-110 XGS-PON module + UniFi Cloud Gateway Fiber ($279) ordered for current house — eliminates BGW320-505 double NAT now. BGW320-505 masquerade values pre-extracted and documented. Hardware in transit.
+
+### Pending
+- WAS-110 + Cloud Gateway Fiber install
+- Samsung TV / Tesla VLAN migration to IoT VLAN 20
+- Unbound prefetch fix for Brave/Discord DNS hang (192.168.10.63)
 
 ## [2026-04-16]
 ### Changed
