@@ -10,7 +10,7 @@ and remote access — all version controlled and documented.
 |-------|-----------|
 | Hypervisor | Proxmox VE 9.x on Lenovo ThinkCentre M920q |
 | Smart Home | Home Assistant OS (QEMU VM) |
-| DNS / Ad Blocking | Pi-hole + Unbound (LXC) — recursive DNS, no upstream dependency |
+| DNS / Ad Blocking | AdGuard Home Primary + Secondary, each with own Unbound (LXC) — recursive DNS, no upstream dependency, synced via adguardhome-sync |
 | Remote Access | Tailscale subnet router — full mesh VPN across all VLANs |
 | Gateway | UniFi Cloud Gateway Ultra (UCG Ultra) |
 | Switching | USW Lite 8 PoE x2 (laundry + office) |
@@ -34,14 +34,16 @@ services (DNS, Home Assistant API, Emulated Hue).
 
 ## Services
 
-- **Pi-hole + Unbound** — Network-wide DNS filtering with recursive resolution. 
-  No reliance on Cloudflare or Google DNS. Filters tracking and ad domains for 
-  all Trusted devices.
+- **AdGuard Home (Primary/Secondary) + Unbound** — Network-wide DNS filtering 
+  with recursive resolution, each instance running its own independent Unbound 
+  resolver (no shared dependency). No reliance on Cloudflare or Google DNS. 
+  `adguardhome-sync` mirrors blocklists and settings from primary to secondary 
+  for redundancy.
 - **Home Assistant** — Local smart home automation with Zigbee, TP-Link Kasa, 
   Alexa Media Player, and Emulated Hue integrations. Zero cloud dependency for 
   core automations.
 - **Tailscale** — Subnet router exposing all four VLANs remotely. Full access 
-  to Proxmox, HA, and Pi-hole from anywhere without port forwarding.
+  to Proxmox, HA, and AdGuard Home from anywhere without port forwarding.
 - **Emulated Hue** — HA acts as a Philips Hue bridge, enabling Alexa voice 
   control of local smart home entities across VLAN boundaries via mDNS proxy.
 
@@ -49,8 +51,9 @@ services (DNS, Home Assistant API, Emulated Hue).
 
 - **Proxmox on Management VLAN 99** — Hypervisor isolated from general traffic. 
   Access restricted to Trusted VLAN via explicit firewall rules (ports 8006, 22).
-- **Pi-hole LXC on Trusted VLAN** — DNS server co-located with trusted devices. 
-  IoT VLAN uses gateway DNS to avoid cross-VLAN firewall complexity.
+- **AdGuard Home Primary/Secondary on Trusted VLAN** — DNS servers co-located 
+  with trusted devices, each with its own independent Unbound resolver. IoT 
+  VLAN uses gateway DNS to avoid cross-VLAN firewall complexity.
 - **Unbound recursive resolver** — Eliminates upstream DNS dependency. Queries 
   go directly to root nameservers, improving privacy and reducing attack surface.
 - **Zone-Based Firewall** — Migrated from legacy Traffic Rules to UniFi 

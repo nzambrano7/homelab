@@ -1,5 +1,6 @@
 - **HA VM:** bridge `vmbr0`, VLAN tag `10` → gets IP on Trusted VLAN
-- **Pi-hole LXC:** bridge `vmbr0`, VLAN tag `10` → static `192.168.10.5`
+- **AdGuard Home Primary LXC:** bridge `vmbr0`, VLAN tag `10` → static `192.168.10.7`
+- **AdGuard Home Secondary LXC:** bridge `vmbr0`, VLAN tag `10` → static `192.168.10.8`
 
 ## Firewall Policy (Zone-Based)
 
@@ -28,10 +29,10 @@
 
 | Rule | Source | Destination | Port | Protocol | Action |
 |------|--------|-------------|------|----------|--------|
-| Allow IoT DNS to Pi-hole | Untrusted | 192.168.10.5 | 53 | TCP/UDP | Allow |
+| Allow IoT DNS to AdGuard | Untrusted | 192.168.10.7, 192.168.10.8 | 53 | TCP/UDP | Allow |
 | Allow IoT to HA Emulated Hue | Untrusted | 192.168.10.204 | 80, 1900 | TCP/UDP | Allow |
 | Allow Internal to IoT | Internal | Untrusted | Any | All | Allow |
-| Allow Trusted DNS to Pi-hole | Internal/Trusted | 192.168.10.5 | 53 | TCP/UDP | Allow |
+| Allow Trusted DNS to AdGuard | Internal/Trusted | 192.168.10.7, 192.168.10.8 | 53 | TCP/UDP | Allow |
 | Allow Trusted to Proxmox | Internal/Trusted | 192.168.99.10 | 8006, 22 | TCP | Allow |
 | Block Default to All | Internal/Default | Trusted + Management | Any | All | Block |
 
@@ -46,10 +47,11 @@ Zone-Based Firewall provides cleaner policy enforcement than legacy Traffic Rule
 IoT devices are completely isolated from Trusted and Management by default, with 
 only specific exceptions (DNS, Emulated Hue) explicitly allowed.
 
-**Why Pi-hole on Trusted VLAN instead of a dedicated DNS VLAN?**
-Simplicity — Pi-hole serves Trusted devices which is the highest-value use case. 
-IoT devices use gateway DNS to avoid cross-VLAN firewall complexity. A dedicated 
-DNS VLAN or running Pi-hole on the gateway itself would be the next iteration.
+**Why AdGuard Home on Trusted VLAN instead of a dedicated DNS VLAN?**
+Simplicity — AdGuard Home (Primary + Secondary) serves Trusted devices which is 
+the highest-value use case. IoT devices use gateway DNS to avoid cross-VLAN 
+firewall complexity. A dedicated DNS VLAN or running AdGuard on the gateway 
+itself would be the next iteration. (Migrated from Pi-hole — see CHANGELOG.)
 
 **Why Tailscale instead of self-hosted WireGuard?**
 AT&T BGW320 uses IP Passthrough (not true bridge mode), causing double NAT that 
