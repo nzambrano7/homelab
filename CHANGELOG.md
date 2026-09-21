@@ -6,11 +6,16 @@ All notable changes to this homelab will be documented here.
 ### Fixed
 - UniFi Cloud Gateway Fiber's "Encrypted DNS" feature was silently overriding all configured upstream DNS (both the VLAN 10 DHCP setting and WAN manual DNS), forwarding every query to a local DoH proxy on `127.0.0.1:5053` regardless of what was configured elsewhere. Disabled Encrypted DNS and set WAN DNS Server to Manual (`192.168.10.7` primary / `192.168.10.8` secondary). Confirmed at the dnsmasq config level (`/run/resolv.conf.d/main`) and via direct client testing that ad-blocking now works end-to-end (client → gateway → AdGuard → Unbound). This likely explains why Pi-hole's ad-blocking may have silently stopped working after the UCG Ultra → Cloud Gateway Fiber swap too — nobody tested blocking specifically after that change.
 - Confirmed no secondary/failover WAN uplink exists that could silently regress this fix (`eth4` interface is a dormant leftover from the pre-bypass AT&T BGW320 handoff, not an active failover).
+- `proxmox/README.md`'s VM/CT table was stale (only listed VM 100) — added CT 101–104.
+
+### Changed
+- README.md and `network/vlans.md` updated to describe AdGuard Home (not Pi-hole) as the current DNS/ad-blocking service — services list, design rationale, and firewall rule table.
+- UniFi Zone-Based Firewall rules updated live: created an `AdGuard-DNS` device group (CT 103 + CT 104 by MAC), then updated destination from `192.168.10.5` to `192.168.10.7`/`.8` and renamed on all 5 affected rules — "Allow IoT DNS to Pi-hole" plus all 4 destination-zone variants of "Allow Trusted DNS to Pi-hole" (Internal, Hotspot, External, VPN). No rules still reference Pi-hole's IP.
 
 ### Pending
 - Full-day validation of the AdGuard Home cutover, restarted from today since ad-blocking wasn't actually flowing through AdGuard until this fix
 - Decommission CT 101 (Pi-hole) once validation passes
-- `proxmox/README.md`'s VM/CT table is stale — only lists VM 100, missing CT 101–104
+- `network/vlans.md`'s documented zone table only lists Internal/Untrusted/External — live config also has Hotspot and VPN zones, undocumented
 
 ## [2026-09-19]
 
