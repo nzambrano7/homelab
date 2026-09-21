@@ -1,6 +1,33 @@
 # Changelog
 
 All notable changes to this homelab will be documented here.
+## [2026-09-21]
+
+### Fixed
+- UniFi Cloud Gateway Fiber's "Encrypted DNS" feature was silently overriding all configured upstream DNS (both the VLAN 10 DHCP setting and WAN manual DNS), forwarding every query to a local DoH proxy on `127.0.0.1:5053` regardless of what was configured elsewhere. Disabled Encrypted DNS and set WAN DNS Server to Manual (`192.168.10.7` primary / `192.168.10.8` secondary). Confirmed at the dnsmasq config level (`/run/resolv.conf.d/main`) and via direct client testing that ad-blocking now works end-to-end (client → gateway → AdGuard → Unbound). This likely explains why Pi-hole's ad-blocking may have silently stopped working after the UCG Ultra → Cloud Gateway Fiber swap too — nobody tested blocking specifically after that change.
+- Confirmed no secondary/failover WAN uplink exists that could silently regress this fix (`eth4` interface is a dormant leftover from the pre-bypass AT&T BGW320 handoff, not an active failover).
+
+### Pending
+- Full-day validation of the AdGuard Home cutover, restarted from today since ad-blocking wasn't actually flowing through AdGuard until this fix
+- Decommission CT 101 (Pi-hole) once validation passes
+- `proxmox/README.md`'s VM/CT table is stale — only lists VM 100, missing CT 101–104
+
+## [2026-09-19]
+
+### Added
+- `adguardhome-sync` added to CT 102's docker-compose stack (`ghcr.io/bakito/adguardhome-sync`) — mirrors blocklists, settings, and rewrites from CT 103 (origin) to CT 104 (replica) every 10 minutes via cron. Credentials in a local `.env` file, not committed.
+- UniFi VLAN 10 DHCP DNS Server updated to `192.168.10.7` (primary) / `192.168.10.8` (secondary), replacing Pi-hole. Fixed IP reservations added in UniFi for CT 103/104's MAC addresses since both addresses fall inside the DHCP pool range (`192.168.10.6`–`.254`).
+
+## [2026-09-18]
+
+### Added
+- CT 103 "adguard-primary" created — Debian 13, `192.168.10.7/24` (VLAN 10), 1 vCPU, 512MB RAM, 2GB disk, unprivileged, nesting+keyctl enabled, protected. AdGuard Home deployed via community-scripts, paired with its own Unbound instance (recursive, same config as CT 101's) at `127.0.0.1:5335`. Fallback DNS (`1.1.1.1`, `9.9.9.9`) configured for resilience Pi-hole never had. Private reverse DNS pointed at the UniFi gateway (`192.168.10.1`) instead of Pi-hole.
+- CT 104 "adguard-secondary" created — same spec as CT 103, `192.168.10.8/24`. Own independent Unbound instance, no shared dependency on CT 103.
+- Both CTs' own OS-level DNS resolution pointed at themselves (`127.0.0.1`) instead of Pi-hole, for full self-sufficiency.
+
+### Decided
+- AdGuard Home chosen over Technitium for the Pi-hole replacement — bigger community, simpler for pure ad-blocking, and `adguardhome-sync` is purpose-built for primary/secondary redundancy. Technitium worth revisiting later if split-horizon DNS or zone hosting becomes a need.
+
 ## [2026-06-22]
 
 ### Fixed
