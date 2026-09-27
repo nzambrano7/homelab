@@ -9,6 +9,8 @@ All notable changes to this homelab will be documented here.
 
 ### Updated
 - Full `apt full-upgrade` applied: Proxmox VE `9.2.3` → `9.2.20`, plus new kernels `7.0.14-19-pve` and `6.17.13-21-pve` (superseding the previously-planned `6.17.13-13-pve` test kernel). Rebooted into `7.0.14-19-pve` — a same-branch bugfix release that may already include upstream e1000e fixes, tried before jumping to the 6.17 branch. Confirmed all 5 CTs came back up clean, EEE fix persisted through reboot, and AdGuard/Unbound DNS chain still resolves and blocks correctly post-upgrade.
+- Package updates applied across all 5 LXCs: CT 101 (pihole), CT 102 (docker-lxc — includes Docker Engine `29.6.0`→`29.8.1`, all 4 containers restarted clean), CT 103/104 (AdGuard — Unbound bumped to `1.26.1`), and CT 105 (valheim — `containerd` `2.3.5`→`2.3.6`, game server container uninterrupted thanks to containerd's shim-based persistence). Verified DNS chain, Docker stack, and the Valheim server all healthy post-upgrade.
+- `proxmox/README.md` was also missing CT 105 (valheim) — added.
 
 ### Pending
 - Monitor for recurrence now that EEE is disabled and running `7.0.14-19-pve`
