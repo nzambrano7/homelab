@@ -18,6 +18,10 @@ All notable changes to this homelab will be documented here.
 - If it recurs: test booting into `6.17.13-21-pve` next — CHANGELOG (2026-06-22) already links the original hang's return specifically to the 7.0.x kernel branch, untested as a fix until now
 - If all software mitigations fail: treat as likely hardware (cable, NIC, thermal) and consider physical inspection or a NIC replacement
 - Considering a second physical host for real redundancy — AdGuard's primary/secondary setup doesn't protect against this host-level failure mode. Candidates researched: Beelink EQ14/MINI S13 (low-power, cheap, sufficient for these light workloads)
+- Uptime Kuma (CT 102) still has a monitor pointed at the now-decommissioned Pi-hole — needs to be deleted or repointed at AdGuard (192.168.10.7/.8) via the web UI
+
+### Removed
+- **Decommissioned CT 101 (Pi-hole)** after a week of validated AdGuard Home operation with no issues. Backed up first (`vzdump`, snapshot mode, zstd — `/var/lib/vz/dump/vzdump-lxc-101-2026_09_27-18_22_21.tar.zst`, 462MB), then destroyed. Confirmed DNS resolution and ad-blocking unaffected (Pi-hole was already fully out of the live path). This completes the Pi-hole → AdGuard Home migration — see `docs/pihole-to-adguard-handoff.md` for the original plan.
 
 ## [2026-09-21]
 
